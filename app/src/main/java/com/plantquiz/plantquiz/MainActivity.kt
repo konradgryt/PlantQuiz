@@ -1,11 +1,11 @@
 package com.plantquiz.plantquiz
 
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-
+import android.view.View
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -14,11 +14,24 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-    //test
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-        }
+
+        Toast.makeText(this, "The onCreate method is called ", Toast.LENGTH_SHORT).show()
+    }
+
+    fun button1IsClicked(buttonView: View) {
+        Toast.makeText(this, "Button number 1 is clicked ", Toast.LENGTH_SHORT).show()
+    }
+
+    fun button2IsClicked(buttonView: View) {
+        Toast.makeText(this, "Button number 2 is clicked ", Toast.LENGTH_SHORT).show()
+    }
+
+    fun button3IsClicked(buttonView: View) {
+        Toast.makeText(this, "Button number 3 is clicked ", Toast.LENGTH_SHORT).show()
+    }
+
+    fun button4IsClicked(buttonView: View) {
+        Toast.makeText(this, "Button number 4 is clicked ", Toast.LENGTH_SHORT).show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
