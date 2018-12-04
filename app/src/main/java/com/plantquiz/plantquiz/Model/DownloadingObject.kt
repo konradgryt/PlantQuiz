@@ -1,4 +1,4 @@
-package com.plantquiz.plantquiz
+package com.plantquiz.plantquiz.Model
 
 import java.io.BufferedInputStream
 import java.io.BufferedReader

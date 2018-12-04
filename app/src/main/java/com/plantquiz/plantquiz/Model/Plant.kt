@@ -1,7 +1,7 @@
-package com.plantquiz.plantquiz
+package com.plantquiz.plantquiz.Model
 
-class Plant(genus: String, species: String, cultivar: String, common: String,
-            pictureName: String, description: String, difficulty: Int, id: Int = 0) {
+class Plant(var genus: String,var species: String,var cultivar: String,var common: String,
+            var pictureName: String,var description: String,var difficulty: Int,var id: Int = 0) {
 
     constructor(): this("","","","","","",0)
 

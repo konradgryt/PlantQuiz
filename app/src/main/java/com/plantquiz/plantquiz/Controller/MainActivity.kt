@@ -1,4 +1,4 @@
-package com.plantquiz.plantquiz
+package com.plantquiz.plantquiz.Controller
 
 import android.app.Activity
 import android.content.Intent
@@ -13,6 +13,9 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
+import com.plantquiz.plantquiz.Model.DownloadingObject
+import com.plantquiz.plantquiz.Model.Plant
+import com.plantquiz.plantquiz.R
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 
@@ -134,7 +137,8 @@ class MainActivity : AppCompatActivity() {
             //to do it need to add:
             // (inside manifest) <uses-permission android:name="android.permission.INTERNET" />
             // (inside application) android:usesCleartextTraffic="true"
-            val downloadingObject: DownloadingObject = DownloadingObject()
+            val downloadingObject: DownloadingObject =
+                DownloadingObject()
             val jsonData = downloadingObject.downloadJSONDataFromLink("http://plantplaces.com/perl/mobile/flashcard.pl")
             Log.i("JSON", jsonData)
 
