@@ -1,12 +1,17 @@
 package com.plantquiz.plantquiz.Controller
 
 import android.app.Activity
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.os.AsyncTask
 import android.os.Bundle
 import android.provider.MediaStore
+import android.provider.Settings
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
@@ -37,9 +42,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        val innerClassObject = DownloadingPlantTask()
-        innerClassObject.execute()
-
+        if (checkForInternetConnection()) {
+            val innerClassObject = DownloadingPlantTask()
+            innerClassObject.execute()
+        }
     /*
         Toast.makeText(this, "The onCreate method is called ", Toast.LENGTH_SHORT).show()
         val myPlant: Plant = Plant("","","","","","",0)
@@ -161,7 +167,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-
+        checkForInternetConnection()
         Toast.makeText(this, "The onResume method is called ", Toast.LENGTH_SHORT).show()
     }
 
@@ -224,5 +230,40 @@ class MainActivity : AppCompatActivity() {
             6 -> button4.setBackgroundColor(Color.BLUE)
         }
 
+    }
+
+    // Check for internet connection
+    private fun checkForInternetConnection(): Boolean {
+
+        val connectivityManager: ConnectivityManager =
+            this.getSystemService(android.content.Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        val networkInfo: NetworkInfo? = connectivityManager.activeNetworkInfo
+        val isDeviceConnectedToInternet = networkInfo != null && networkInfo.isConnected
+        if (!isDeviceConnectedToInternet) {
+            createAlert()
+            Log.i("INTERNET","There is no internet")
+            return false
+        } else {
+            Log.i("INTERNET","There is internet")
+            return true
+        }
+    }
+
+    private fun createAlert() {
+        val alertDialog: AlertDialog = AlertDialog.Builder(this@MainActivity).create()
+        alertDialog.setTitle("Network Error")
+        alertDialog.setMessage("Please check internet connection")
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", {
+                dialog: DialogInterface?, which: Int ->
+                startActivity(Intent(Settings.ACTION_SETTINGS))
+        })
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE,"Cancel", {
+            dialog: DialogInterface?, which: Int ->
+            Toast.makeText(this@MainActivity, " You must be connected to the internet", Toast.LENGTH_SHORT).show()
+            finish() // closing current activity
+        })
+
+        alertDialog.show()
     }
 }
