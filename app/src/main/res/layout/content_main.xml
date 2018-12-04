@@ -48,13 +48,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
             <Button
-                    android:text="Button 1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:id="@+id/button1" android:onClick="button1IsClicked"/>
+                    android:layout_width="150dp"
+                    android:layout_height="70dp" android:id="@+id/button1" android:onClick="button1IsClicked"/>
             <Button
-                    android:text="Button 2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:id="@+id/button2" android:onClick="button2IsClicked"/>
+                    android:layout_width="150dp"
+                    android:layout_height="70dp" android:id="@+id/button2" android:onClick="button2IsClicked"/>
         </LinearLayout>
         <LinearLayout
                 android:orientation="vertical"
@@ -63,7 +61,7 @@
             <TextView
                     android:text="TextView"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:id="@+id/textView"
+                    android:layout_height="wrap_content" android:id="@+id/txtState"
                     android:gravity="center_horizontal"/>
         </LinearLayout>
         <LinearLayout
@@ -71,13 +69,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
             <Button
-                    android:text="Button 3"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:id="@+id/button3" android:onClick="button3IsClicked"/>
+                    android:layout_width="150dp"
+                    android:layout_height="70dp" android:id="@+id/button3" android:onClick="button3IsClicked"/>
             <Button
-                    android:text="Button 4"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:id="@+id/button4" android:onClick="button4IsClicked"/>
+                    android:layout_width="150dp"
+                    android:layout_height="70dp" android:id="@+id/button4" android:onClick="button4IsClicked"/>
         </LinearLayout>
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

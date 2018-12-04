@@ -18,7 +18,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
-import com.plantquiz.plantquiz.Model.DownloadingObject
+import com.plantquiz.plantquiz.Model.ParsePlantUtility
 import com.plantquiz.plantquiz.Model.Plant
 import com.plantquiz.plantquiz.R
 import kotlinx.android.synthetic.main.activity_main.*
@@ -37,6 +37,9 @@ class MainActivity : AppCompatActivity() {
     val OPEN_CAMERA_BUTTON_REQUEST_ID = 1000
     val OPEN_GALLERY_BUTTON_REQUEST_ID = 2000
 
+    var correctAnswerIndex: Int = 0
+    var correctPlant: Plant? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -44,7 +47,7 @@ class MainActivity : AppCompatActivity() {
 
         if (checkForInternetConnection()) {
             val innerClassObject = DownloadingPlantTask()
-            innerClassObject.execute()
+            innerClassObject.execute() //calss doInBackground function in innerClassObject
         }
     /*
         Toast.makeText(this, "The onCreate method is called ", Toast.LENGTH_SHORT).show()
@@ -138,17 +141,19 @@ class MainActivity : AppCompatActivity() {
         //overwriting function from asynctask class
         // vararg is passing multiple parameters?
         // can access background thread. not the user interface thread
-        override fun doInBackground(vararg params: String?): List<Plant>? {
+        override fun doInBackground(vararg params: String?): List<Plant>? { //called by execute
 
             //to do it need to add:
             // (inside manifest) <uses-permission android:name="android.permission.INTERNET" />
             // (inside application) android:usesCleartextTraffic="true"
-            val downloadingObject: DownloadingObject =
-                DownloadingObject()
-            val jsonData = downloadingObject.downloadJSONDataFromLink("http://plantplaces.com/perl/mobile/flashcard.pl")
-            Log.i("JSON", jsonData)
+//            val downloadingObject: DownloadingObject =
+//                DownloadingObject()
+//            val jsonData = downloadingObject.downloadJSONDataFromLink("http://plantplaces.com/perl/mobile/flashcard.pl")
+//            Log.i("JSON", jsonData)
 
-            return null
+            val parsePlant = ParsePlantUtility()
+
+            return parsePlant.parsePlantObjectsFromJSONData()
         }
 
         // after doinbackground is going to be executed completely,
@@ -156,6 +161,29 @@ class MainActivity : AppCompatActivity() {
         // can access user interface thread. not background thread
         override fun onPostExecute(result: List<Plant>?) {
             super.onPostExecute(result)
+
+            var numberOfPlants = result?.size ?: 0
+
+            if (numberOfPlants > 0) {
+                var randomPlantIndexForButton1: Int = (Math.random() * result!!.size).toInt()
+                var randomPlantIndexForButton2: Int = (Math.random() * result.size).toInt()
+                var randomPlantIndexForButton3: Int = (Math.random() * result.size).toInt()
+                var randomPlantIndexForButton4: Int = (Math.random() * result.size).toInt()
+
+                var allRandomPlants = ArrayList<Plant>()
+                allRandomPlants.add(result.get(randomPlantIndexForButton1))
+                allRandomPlants.add(result.get(randomPlantIndexForButton2))
+                allRandomPlants.add(result.get(randomPlantIndexForButton3))
+                allRandomPlants.add(result.get(randomPlantIndexForButton4))
+
+                button1.text = result.get(randomPlantIndexForButton1).toString()
+                button2.text = result.get(randomPlantIndexForButton2).toString()
+                button3.text = result.get(randomPlantIndexForButton3).toString()
+                button4.text = result.get(randomPlantIndexForButton4).toString()
+
+                correctAnswerIndex = (Math.random() * allRandomPlants.size).toInt()
+                correctPlant = allRandomPlants.get(correctAnswerIndex)
+            }
         }
     }
 

@@ -37,7 +37,7 @@ class ParsePlantUtility {
                 plantObject.species = getString("species")
                 plantObject.cultivar = getString("cultivar")
                 plantObject.common = getString("common")
-                plantObject.pictureName = getString("pictureName")
+                plantObject.pictureName = getString("picture_name")
                 plantObject.description = getString("description")
                 plantObject.difficulty = getInt("difficulty")
                 plantObject.id = getInt("id")
