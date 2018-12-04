@@ -3,21 +3,28 @@ package com.plantquiz.plantquiz
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.os.AsyncTask
 import android.os.Bundle
 import android.provider.MediaStore
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.content_main.*
 
 class MainActivity : AppCompatActivity() {
 
     private var _cameraButton: Button? = null
     private var _photoGalleryButton: Button? = null
     private var _imageTaken: ImageView? = null
+    private var _button1: Button? = null
+    private var _button2: Button? = null
+    private var _button3: Button? = null
+    private var _button4: Button? = null
 
     val OPEN_CAMERA_BUTTON_REQUEST_ID = 1000
     val OPEN_GALLERY_BUTTON_REQUEST_ID = 2000
@@ -26,6 +33,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+
+        val innerClassObject = DownloadingPlantTask()
+        innerClassObject.execute()
 
     /*
         Toast.makeText(this, "The onCreate method is called ", Toast.LENGTH_SHORT).show()
@@ -46,6 +56,14 @@ class MainActivity : AppCompatActivity() {
         _cameraButton = findViewById(R.id.btnOpenCamera)
         _photoGalleryButton = findViewById(R.id.btnOpenPhotoGallery)
         _imageTaken = findViewById(R.id.imgTaken)
+
+
+        _button1 = findViewById(R.id.button1)
+        _button2 = findViewById(R.id.button2)
+        _button3 = findViewById(R.id.button3)
+        //Its declared in the class so i dont have to put <Button>, but if I would declare and instantiate it here
+        // then I have to put it like this, example:
+        _button4 = findViewById<Button>(R.id.button4)
 
         _cameraButton?.setOnClickListener{
             Toast.makeText(this, "Camera button is clicked", Toast.LENGTH_SHORT).show()
@@ -113,6 +131,13 @@ class MainActivity : AppCompatActivity() {
         // can access background thread. not the user interface thread
         override fun doInBackground(vararg params: String?): List<Plant>? {
 
+            //to do it need to add:
+            // (inside manifest) <uses-permission android:name="android.permission.INTERNET" />
+            // (inside application) android:usesCleartextTraffic="true"
+            val downloadingObject: DownloadingObject = DownloadingObject()
+            val jsonData = downloadingObject.downloadJSONDataFromLink("http://plantplaces.com/perl/mobile/flashcard.pl")
+            Log.i("JSON", jsonData)
+
             return null
         }
 
@@ -158,5 +183,42 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
 
         Toast.makeText(this, "The onDestroy method is called ", Toast.LENGTH_SHORT).show()
+    }
+
+    fun imageViewIsClicked(imageView: View) {
+
+        val randomNumber: Int = (Math.random() * 6).toInt() + 1
+        Log.i("TAG", "THE RANDOM NUBER IS: $randomNumber")
+
+        /*
+        if (randomNumber == 1) {
+            // I can use instance variables or names used in xml file
+
+            //_cameraButton?.setBackgroundColor(Color.YELLOW) // instance variable, private field
+            btnOpenCamera.setBackgroundColor(Color.YELLOW) // id from xml file
+            btnOpenCamera.setBackgroundColor(Color.YELLOW) // id from xml file
+        } else if (randomNumber == 2) {
+            _photoGalleryButton?.setBackgroundColor(Color.MAGENTA)
+            //btnOpenPhotoGallery.setBackgroundColor(Color.MAGENTA)
+        } else if (randomNumber == 3) {
+            _button1?.setBackgroundColor(Color.RED)
+        } else if (randomNumber == 4) {
+            _button2?.setBackgroundColor(Color.GRAY)
+        } else if (randomNumber == 5) {
+            button3.setBackgroundColor(Color.CYAN) //using button3 (from content_main.xml) instead _button3? for diversity
+        } else { //if (randomNumber == 6) {
+            _button4?.setBackgroundColor(Color.BLUE)
+        }
+        */
+
+        when (randomNumber) {
+            1 -> btnOpenCamera.setBackgroundColor(Color.YELLOW)
+            2 -> btnOpenPhotoGallery.setBackgroundColor(Color.MAGENTA)
+            3 -> button1.setBackgroundColor(Color.RED)
+            4 -> button2.setBackgroundColor(Color.GRAY)
+            5 -> button3.setBackgroundColor(Color.CYAN)
+            6 -> button4.setBackgroundColor(Color.BLUE)
+        }
+
     }
 }
