@@ -18,6 +18,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
+import com.plantquiz.plantquiz.Model.DownloadingObject
 import com.plantquiz.plantquiz.Model.ParsePlantUtility
 import com.plantquiz.plantquiz.Model.Plant
 import com.plantquiz.plantquiz.R
@@ -110,29 +111,32 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun button1IsClicked(buttonView: View)  {
-        Toast.makeText(this, "Button number 1 is clicked ", Toast.LENGTH_SHORT).show()
-
-        var myNumber = 20 //Implied data type
-        val myName: String = "Konrad" //Specified data type
-        var numberOfLetters = myName.length
-
-        //myName = "another name" val is equivalent of a constant - so cannot change it
-
-        var animalName: String? = null
-        var testNullVar = animalName?.length ?: 100 // If animalname is null, assign 100 to testNullVar
-
+//        Toast.makeText(this, "Button number 1 is clicked ", Toast.LENGTH_SHORT).show()
+//
+//        var myNumber = 20 //Implied data type
+//        val myName: String = "Konrad" //Specified data type
+//        var numberOfLetters = myName.length
+//
+//        //myName = "another name" val is equivalent of a constant - so cannot change it
+//
+//        var animalName: String? = null
+//        var testNullVar = animalName?.length ?: 100 // If animalname is null, assign 100 to testNullVar
+        evaluateAnswer(0)
     }
 
     fun button2IsClicked(buttonView: View) {
-        Toast.makeText(this, "Button number 2 is clicked ", Toast.LENGTH_SHORT).show()
+    //    Toast.makeText(this, "Button number 2 is clicked ", Toast.LENGTH_SHORT).show()
+        evaluateAnswer(1)
     }
 
     fun button3IsClicked(buttonView: View) {
-        Toast.makeText(this, "Button number 3 is clicked ", Toast.LENGTH_SHORT).show()
+    //    Toast.makeText(this, "Button number 3 is clicked ", Toast.LENGTH_SHORT).show()
+        evaluateAnswer(2)
     }
 
     fun button4IsClicked(buttonView: View) {
-        Toast.makeText(this, "Button number 4 is clicked ", Toast.LENGTH_SHORT).show()
+    //    Toast.makeText(this, "Button number 4 is clicked ", Toast.LENGTH_SHORT).show()
+        evaluateAnswer(3)
     }
 
     // <Parameters that wil be passed to the task , Integer - on progress update method, Datatype of returned value of async task>
@@ -183,6 +187,9 @@ class MainActivity : AppCompatActivity() {
 
                 correctAnswerIndex = (Math.random() * allRandomPlants.size).toInt()
                 correctPlant = allRandomPlants.get(correctAnswerIndex)
+
+                val downloadingImageTask = DownloadingImageTask()
+                downloadingImageTask.execute(allRandomPlants.get(correctAnswerIndex).pictureName)
             }
         }
     }
@@ -293,5 +300,49 @@ class MainActivity : AppCompatActivity() {
         })
 
         alertDialog.show()
+    }
+
+    private fun evaluateAnswer(userGuess: Int) {
+
+        if (userGuess != correctAnswerIndex) {
+            var correctPlantName = correctPlant.toString()
+            txtState.text = "Wrong. Choose : $correctPlantName"
+            when (userGuess) {
+                0 -> button1.setBackgroundColor(Color.RED)
+                1 -> button2.setBackgroundColor(Color.RED)
+                2 -> button3.setBackgroundColor(Color.RED)
+                3 -> button4.setBackgroundColor(Color.RED)
+            }
+        } else {
+            txtState.text = "Right!"
+            when (correctAnswerIndex) {
+                0 -> button1.setBackgroundColor(Color.GREEN)
+                1 -> button2.setBackgroundColor(Color.GREEN)
+                2 -> button3.setBackgroundColor(Color.GREEN)
+                3 -> button4.setBackgroundColor(Color.GREEN)
+            }
+        }
+    }
+
+    //Downloading Image Process
+
+    inner class DownloadingImageTask: AsyncTask<String, Int, Bitmap?>() {
+        override fun doInBackground(vararg pictureName: String?): Bitmap? {
+
+            try {
+                val downloadingObject = DownloadingObject()
+                val plantBitmap: Bitmap? = downloadingObject.downloadPicture(pictureName[0])
+
+                return plantBitmap
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            return null
+        }
+
+        override fun onPostExecute(result: Bitmap?) {
+            super.onPostExecute(result)
+            imgTaken.setImageBitmap(result)
+        }
     }
 }
