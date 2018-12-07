@@ -7,7 +7,7 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:showIn="@layout/activity_main"
-        tools:context=".Controller.MainActivity" android:background="#000">
+        tools:context=".Controller.MainActivity" android:background="#00AA00">
     <Button
             android:text="Open Camera"
             android:layout_height="wrap_content" android:id="@+id/btnOpenCamera"

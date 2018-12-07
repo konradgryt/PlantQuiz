@@ -23,6 +23,8 @@ import android.view.WindowManager
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
+import com.daimajia.androidanimations.library.Techniques
+import com.daimajia.androidanimations.library.YoYo
 import com.plantquiz.plantquiz.Model.DownloadingObject
 import com.plantquiz.plantquiz.Model.ParsePlantUtility
 import com.plantquiz.plantquiz.Model.Plant
@@ -120,7 +122,7 @@ class MainActivity : AppCompatActivity() {
 //                button4.setBackgroundColor(Color.LTGRAY)
                 var gradientColors: IntArray = IntArray(2)
                 gradientColors[0] = Color.parseColor("#BFBFBF")
-                gradientColors[1] = Color.parseColor("#00005F")
+                gradientColors[1] = Color.parseColor("#99e79d")
                 var gradient = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, gradientColors)
                 gradient.cornerRadius = dpToPx(30f, this)
                 gradient.setStroke(5,Color.parseColor("#FFFFFF"))
@@ -345,14 +347,14 @@ class MainActivity : AppCompatActivity() {
     private fun evaluateAnswer(userGuess: Int) {
         var gradientColors: IntArray = IntArray(2)
         gradientColors[0] = Color.parseColor("#FF0000")
-        gradientColors[1] = Color.parseColor("#00005F")
+        gradientColors[1] = Color.parseColor("#99e79d")
         var gradient = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, gradientColors)
         gradient.cornerRadius = dpToPx(30f, this)
         gradient.setStroke(5,Color.parseColor("#FFFFFF"))
 
         var gradientColors2: IntArray = IntArray(2)
         gradientColors2[0] = Color.parseColor("#00FF00")
-        gradientColors2[1] = Color.parseColor("#00005F")
+        gradientColors2[1] = Color.parseColor("#99e79d")
         var gradient2 = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, gradientColors2)
         gradient2.cornerRadius = dpToPx(30f, this)
         gradient2.setStroke(5,Color.parseColor("#FFFFFF"))
@@ -403,6 +405,15 @@ class MainActivity : AppCompatActivity() {
             super.onPostExecute(result)
             imgTaken.setImageBitmap(result)
             setProgressBar(false)
+            playAnimationOnView(imgTaken,Techniques.Tada)
+            playAnimationOnView(button1,Techniques.RollIn)
+            playAnimationOnView(button2,Techniques.RotateIn)
+            playAnimationOnView(button3,Techniques.RollIn)
+            playAnimationOnView(button4,Techniques.RotateIn)
+            playAnimationOnView(btnNextPlant,Techniques.Swing)
+            playAnimationOnView(txtState,Techniques.Swing)
+            playAnimationOnView(txtWrongAnswers,Techniques.Landing)
+            playAnimationOnView(txtRightAnswers,Techniques.Landing)
         }
     }
 
@@ -448,5 +459,10 @@ class MainActivity : AppCompatActivity() {
 
     fun dpToPx(dp: Float, context: Context): Float {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.resources.displayMetrics)
+    }
+
+    //Animations
+    private fun playAnimationOnView(view: View?, technique: Techniques) {
+        YoYo.with(technique).duration(700).repeat(0).playOn(view)
     }
 }
