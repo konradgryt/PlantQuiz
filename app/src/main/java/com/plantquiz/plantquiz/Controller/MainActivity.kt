@@ -1,11 +1,14 @@
 package com.plantquiz.plantquiz.Controller
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.os.AsyncTask
@@ -14,7 +17,9 @@ import android.provider.MediaStore
 import android.provider.Settings
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.util.TypedValue
 import android.view.View
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
@@ -48,6 +53,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+        setProgressBar(false)
+        imgTaken.setVisibility(View.GONE)
+        button1.setVisibility(View.GONE)
+        button2.setVisibility(View.GONE)
+        button3.setVisibility(View.GONE)
+        button4.setVisibility(View.GONE)
+        txtState.setVisibility(View.GONE)
+        txtRightAnswers.setVisibility(View.GONE)
+        txtWrongAnswers.setVisibility(View.GONE)
     /*
         Toast.makeText(this, "The onCreate method is called ", Toast.LENGTH_SHORT).show()
         val myPlant: Plant = Plant("","","","","","",0)
@@ -93,16 +107,28 @@ class MainActivity : AppCompatActivity() {
         //See the next plant
         btnNextPlant.setOnClickListener{
             if (checkForInternetConnection()) {
+                setProgressBar(true)
                 try {
                     val innerClassObject = DownloadingPlantTask()
                     innerClassObject.execute() //calss doInBackground function in innerClassObject
                 } catch(e: Exception) {
                     e.printStackTrace()
                 }
-                button1.setBackgroundColor(Color.LTGRAY)
-                button2.setBackgroundColor(Color.LTGRAY)
-                button3.setBackgroundColor(Color.LTGRAY)
-                button4.setBackgroundColor(Color.LTGRAY)
+//                button1.setBackgroundColor(Color.LTGRAY)
+//                button2.setBackgroundColor(Color.LTGRAY)
+//                button3.setBackgroundColor(Color.LTGRAY)
+//                button4.setBackgroundColor(Color.LTGRAY)
+                var gradientColors: IntArray = IntArray(2)
+                gradientColors[0] = Color.parseColor("#BFBFBF")
+                gradientColors[1] = Color.parseColor("#00005F")
+                var gradient = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, gradientColors)
+                gradient.cornerRadius = dpToPx(30f, this)
+                gradient.setStroke(5,Color.parseColor("#FFFFFF"))
+
+                button1.setBackground(gradient)
+                button2.setBackground(gradient)
+                button3.setBackground(gradient)
+                button4.setBackground(gradient)
             }
         }
     }
@@ -317,27 +343,42 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun evaluateAnswer(userGuess: Int) {
+        var gradientColors: IntArray = IntArray(2)
+        gradientColors[0] = Color.parseColor("#FF0000")
+        gradientColors[1] = Color.parseColor("#00005F")
+        var gradient = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, gradientColors)
+        gradient.cornerRadius = dpToPx(30f, this)
+        gradient.setStroke(5,Color.parseColor("#FFFFFF"))
+
+        var gradientColors2: IntArray = IntArray(2)
+        gradientColors2[0] = Color.parseColor("#00FF00")
+        gradientColors2[1] = Color.parseColor("#00005F")
+        var gradient2 = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, gradientColors2)
+        gradient2.cornerRadius = dpToPx(30f, this)
+        gradient2.setStroke(5,Color.parseColor("#FFFFFF"))
+
 
         if (userGuess != correctAnswerIndex) {
             userAnsweredIncorrectly++
             txtWrongAnswers.text = "$userAnsweredIncorrectly"
             var correctPlantName = correctPlant.toString()
             txtState.text = "Wrong. Choose : $correctPlantName"
+
             when (userGuess) {
-                0 -> button1.setBackgroundColor(Color.RED)
-                1 -> button2.setBackgroundColor(Color.RED)
-                2 -> button3.setBackgroundColor(Color.RED)
-                3 -> button4.setBackgroundColor(Color.RED)
+                0 -> button1.setBackground(gradient)
+                1 -> button2.setBackground(gradient)
+                2 -> button3.setBackground(gradient)
+                3 -> button4.setBackground(gradient)
             }
         } else {
             numberOfTimesUserAnsweredCorrectly++
             txtRightAnswers.text = "$numberOfTimesUserAnsweredCorrectly"
             txtState.text = "Right!"
             when (correctAnswerIndex) {
-                0 -> button1.setBackgroundColor(Color.GREEN)
-                1 -> button2.setBackgroundColor(Color.GREEN)
-                2 -> button3.setBackgroundColor(Color.GREEN)
-                3 -> button4.setBackgroundColor(Color.GREEN)
+                0 -> button1.setBackground(gradient2)
+                1 -> button2.setBackground(gradient2)
+                2 -> button3.setBackground(gradient2)
+                3 -> button4.setBackground(gradient2)
             }
         }
     }
@@ -361,6 +402,51 @@ class MainActivity : AppCompatActivity() {
         override fun onPostExecute(result: Bitmap?) {
             super.onPostExecute(result)
             imgTaken.setImageBitmap(result)
+            setProgressBar(false)
         }
+    }
+
+    //ProgressBar State
+    private fun setProgressBar(show: Boolean) {
+        if (show) {
+            setUIWidgets(false)
+            linearLayoutProgress.setVisibility(View.VISIBLE)
+            progressBar.setVisibility(View.VISIBLE)
+            window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        } else {
+            setUIWidgets(true)
+            linearLayoutProgress.setVisibility(View.GONE)
+            progressBar.setVisibility(View.GONE)
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        }
+    }
+
+    @SuppressLint("RestrictedApi")
+    private fun setUIWidgets(display:Boolean) {
+        if (display) {
+            imgTaken.setVisibility(View.VISIBLE)
+            button1.setVisibility(View.VISIBLE)
+            button2.setVisibility(View.VISIBLE)
+            button3.setVisibility(View.VISIBLE)
+            button4.setVisibility(View.VISIBLE)
+            txtState.setVisibility(View.VISIBLE)
+            txtRightAnswers.setVisibility(View.VISIBLE)
+            txtWrongAnswers.setVisibility(View.VISIBLE)
+            btnNextPlant.setVisibility(View.VISIBLE) // suppressed
+        } else {
+            imgTaken.setVisibility(View.GONE)
+            button1.setVisibility(View.GONE)
+            button2.setVisibility(View.GONE)
+            button3.setVisibility(View.GONE)
+            button4.setVisibility(View.GONE)
+            txtState.setVisibility(View.GONE)
+            txtRightAnswers.setVisibility(View.GONE)
+            txtWrongAnswers.setVisibility(View.GONE)
+            btnNextPlant.setVisibility(View.GONE) // suppressed
+        }
+    }
+
+    fun dpToPx(dp: Float, context: Context): Float {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.resources.displayMetrics)
     }
 }
