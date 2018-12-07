@@ -38,18 +38,16 @@ class MainActivity : AppCompatActivity() {
     val OPEN_CAMERA_BUTTON_REQUEST_ID = 1000
     val OPEN_GALLERY_BUTTON_REQUEST_ID = 2000
 
+    //Instance vars
     var correctAnswerIndex: Int = 0
     var correctPlant: Plant? = null
+    var numberOfTimesUserAnsweredCorrectly: Int = 0
+    var userAnsweredIncorrectly: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-
-        if (checkForInternetConnection()) {
-            val innerClassObject = DownloadingPlantTask()
-            innerClassObject.execute() //calss doInBackground function in innerClassObject
-        }
     /*
         Toast.makeText(this, "The onCreate method is called ", Toast.LENGTH_SHORT).show()
         val myPlant: Plant = Plant("","","","","","",0)
@@ -90,6 +88,22 @@ class MainActivity : AppCompatActivity() {
 
             val galleryIntent = Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
             startActivityForResult(galleryIntent, OPEN_GALLERY_BUTTON_REQUEST_ID)
+        }
+
+        //See the next plant
+        btnNextPlant.setOnClickListener{
+            if (checkForInternetConnection()) {
+                try {
+                    val innerClassObject = DownloadingPlantTask()
+                    innerClassObject.execute() //calss doInBackground function in innerClassObject
+                } catch(e: Exception) {
+                    e.printStackTrace()
+                }
+                button1.setBackgroundColor(Color.LTGRAY)
+                button2.setBackgroundColor(Color.LTGRAY)
+                button3.setBackgroundColor(Color.LTGRAY)
+                button4.setBackgroundColor(Color.LTGRAY)
+            }
         }
     }
 
@@ -305,6 +319,8 @@ class MainActivity : AppCompatActivity() {
     private fun evaluateAnswer(userGuess: Int) {
 
         if (userGuess != correctAnswerIndex) {
+            userAnsweredIncorrectly++
+            txtWrongAnswers.text = "$userAnsweredIncorrectly"
             var correctPlantName = correctPlant.toString()
             txtState.text = "Wrong. Choose : $correctPlantName"
             when (userGuess) {
@@ -314,6 +330,8 @@ class MainActivity : AppCompatActivity() {
                 3 -> button4.setBackgroundColor(Color.RED)
             }
         } else {
+            numberOfTimesUserAnsweredCorrectly++
+            txtRightAnswers.text = "$numberOfTimesUserAnsweredCorrectly"
             txtState.text = "Right!"
             when (correctAnswerIndex) {
                 0 -> button1.setBackgroundColor(Color.GREEN)
